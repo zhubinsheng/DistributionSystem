@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stylefeng.guns.modular.dist.dao.DisProfitRecordDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="map">
+        <id column="id" property="id" />
+        <result column="dis_platform_id" property="disPlatformId" />
+        <result column="dis_get_user_id" property="disGetUserId" />
+        <result column="dis_set_user_id" property="disSetUserId" />
+        <result column="dis_amount" property="disAmount" />
+        <result column="account_type" property="accountType" />
+        <result column="dis_note" property="disNote" />
+        <result column="dis_user_type" property="disUserType" />
+        <result column="dis_order_id" property="disOrderId" />
+        <result column="is_delete" property="isDelete" />
+        <result column="add_time" property="addTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="type" property="type" />
+    </resultMap>
+    <select id="selectList" resultMap="BaseResultMap">
+        SELECT r.`dis_get_user_id`,r.`dis_set_user_id`,r.`dis_amount`,r.`dis_note`,r.`dis_order_id`,
+        r.`add_time`, d.`dic_value` AS account_type ,u.dic_value AS dis_user_type,r.type
+        FROM   `dis_profit_record` r
+        LEFT JOIN `sys_dic` d ON d.`dic_no`=r.`account_type` AND d.`dic_type_no`='accountType'
+        LEFT JOIN `sys_dic` u ON u.`dic_no`=r.`dis_user_type` AND u.`dic_type_no`='disUserPlatType'
+    where r.is_delete='N'
+        <if test="account != null and account != ''">
+            and r.dis_platform_id=#{account}
+        </if>
+        <if test="disGetUserId != null and disGetUserId != ''">
+            and r.dis_get_user_id=#{disGetUserId}
+        </if>
+        <if test="disSetUserId != null and disSetUserId != ''">
+            and r.dis_set_user_id=#{disSetUserId}
+        </if>
+        <if test="disOrderId != null and disOrderId != ''">
+            and r.dis_order_id=#{disOrderId}
+        </if>
+        <if test="accountType != null and accountType != ''">
+            and r.account_type=#{accountType}
+        </if>
+        <if test="userType != null and userType != ''">
+            and r.dis_user_type=#{userType}
+        </if>
+    order by  r.add_time DESC
+    </select>
+
+</mapper>

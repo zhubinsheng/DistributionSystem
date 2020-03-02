@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>赚不停</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/slick.css}"/>
+    <link rel="stylesheet" th:href="@{/css/jquery.mobile-1.4.5.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/jquery.mobile-1.4.5.min.js}"></script>
+</head>
+<body style="background-color: #f2f2f2;">
+   <div style="margin-top: 50px">
+       <input th:value="@{/}" id="path" type="hidden">
+       <form>
+           <input type="text" class="form-control" id="userId" placeholder="请输入分销系统的id账号">
+           <button type="button" class="btn btn-primary btn-lg btn-block" onclick="login()">确定进入系统</button>
+       </form>
+   </div>
+</body>
+<script>
+    function  login() {
+        var userId=$("#userId").val();
+        var path=$("#path").val();
+        window.location.href=path+"login?userId="+userId;
+    }
+</script>
+</html>
