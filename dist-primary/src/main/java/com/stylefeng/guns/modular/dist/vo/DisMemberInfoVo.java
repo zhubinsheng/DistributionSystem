@@ -2,6 +2,8 @@ package com.stylefeng.guns.modular.dist.vo;
 
 public class DisMemberInfoVo   {
 
+    private String password;
+
     private String  secret;
 
     private String disPlatformId;
@@ -73,4 +75,11 @@ public class DisMemberInfoVo   {
         this.disNote = disNote;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

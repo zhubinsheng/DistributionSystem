@@ -8,7 +8,7 @@ spring:
   session:
     store-type: none
   profiles:
-    active: pro # 激活dev
+    active: dev # 激活dev
   mvc:
     static-path-pattern: /static/**
     view:

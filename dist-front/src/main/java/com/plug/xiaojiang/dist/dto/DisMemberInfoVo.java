@@ -18,6 +18,8 @@ public class DisMemberInfoVo {
 
     private String disPlatSuper;
 
+    private String password;
+
     public String getSecret() {
         return secret;
     }
@@ -80,5 +82,13 @@ public class DisMemberInfoVo {
 
     public void setDisPlatSuper(String disPlatSuper) {
         this.disPlatSuper = disPlatSuper;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

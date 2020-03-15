@@ -19,6 +19,9 @@ public class LoginInterceptor  implements HandlerInterceptor {
                 if(uri.contains("login")){
                     return true;
                 }
+                if(uri.contains("inviteByUser")){
+                    return true;
+                }
                 response.sendRedirect(request.getContextPath()+"/index");
                 return false;
             }

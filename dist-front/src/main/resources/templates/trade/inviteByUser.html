@@ -15,14 +15,14 @@
    		<!--jqmb需要把所以东西放在page div内--> 
 		<header data-role="header" data-position="fixed">
 			<a href="#" data-rel="back" class="ui-btn ui-icon-carat-l ui-btn-icon-left ui-nodisc-icon" data-transition="slide" data-direction="reverse">返回</a> 
-			<h3>模拟邀请好友</h3>
+			<h3>邀请好友</h3>
 		</header>
 		<div class="ui-content" data-role="content">
 			<section class="month-top">
-				<h3>邀请好友</h3>
-				<input type="text" class="form-control" id="name" placeholder="请输入要邀请好友的名字">
-				<input type="text" class="form-control" id="userName" placeholder="请输入要邀请好友的账号">
-				<input type="text" class="form-control" id="password" placeholder="请输入要邀请好友的密码">
+				<h3>注册</h3>
+				<input type="text" class="form-control" id="name" placeholder="请输入名字">
+				<input type="text" class="form-control" id="userName" placeholder="请输入账号">
+				<input type="text" class="form-control" id="password" placeholder="请输入密码">
 			</section>
 			<article class="month-text">
 				<h3>平台保障</h3>
@@ -51,22 +51,29 @@
                 var name=$("#name").val();
 				var userName=$("#userName").val();
 				if(userName==""){
-				    alert("请输入邀请好友的账号");
+				    alert("请输入账号");
 				    return ;
 				}
                 var password=$("#password").val();
                 if(password==""){
-                    alert("请输入邀请好友的密码");
+                    alert("请输入密码");
                     return ;
                 }
-
+                var url = window.location.search;
+                // alert(url.length);
+                // alert(url);
+                // alert(url.lastIndexOf('='));
+                var disUserId = url.substring(url.indexOf('=')+1, url.indexOf('&'));
+                var disPlatSuper = url.substring(url.lastIndexOf('=')+1, url.length);
+                // alert(disUserId);
+                // alert(disPlatSuper);
                 var path=$("#path").val();
 				$.ajax({
-					url:path+"inviteUser",
-					data:{"userName":userName,"password":password,"name":name},
+					url:path+"inviteUserBySelf",
+					data:{"userName":userName,"password":password,"name":name,"disUserId":disUserId,"disPlatSuper":disPlatSuper},
                     success:function (result) {
 					    if(result.success){
-                            alert("邀请成功");
+                            alert("注册成功");
 						}else{
                             alert(result.errorMessage);
 						}

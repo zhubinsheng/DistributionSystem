@@ -37,8 +37,8 @@ public class LoginController {
         return "self";
     }
     @RequestMapping("/login")
-    public String home(String userId, HttpServletRequest request){
-        DistResult result= sendToDistService.getUserInfo(prefix,userId);
+    public String home(String userId,String password, HttpServletRequest request){
+        DistResult result= sendToDistService.getUserInfo(prefix,userId,password);
         if(result.isSuccess()){
             Map<String ,Object> map= (Map<String, Object>) result.getData();
             Gson gson = new Gson();

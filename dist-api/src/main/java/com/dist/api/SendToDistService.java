@@ -18,11 +18,12 @@ public class SendToDistService {
      * @param userId
      * @return
      */
-    public DistResult getUserInfo(String prefix,String userId){
-        DistResult result= RestClient.create("http://localhost:8081"+"/api/v1/getUserInfo")
+    public DistResult getUserInfo(String prefix,String userId,String password){
+        DistResult result= RestClient.create(prefix+"/api/v1/getUserInfo")
                 .contentType(MediaType.APPLICATION_JSON)
                 .acceptableMediaType(MediaType.APPLICATION_JSON)
                 .addParam("userId",userId)
+                .addParam("password",password)
                 .get(new ParameterizedTypeReference<DistResult>() {
                 });
         return result;

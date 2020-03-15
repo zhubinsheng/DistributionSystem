@@ -47,6 +47,9 @@
             </a>
         </dl>
         <dl class="index-year">
+            <a href="javascript:void(0)" onclick="shareInvite()" data-transition="slide">分享邀请链接</a>
+        </dl>
+        <dl class="index-year">
             <a href="/trade.html" data-transition="slide" data-ajax="false">
                 <dd>
                     <h4>交易</h4>
@@ -71,6 +74,7 @@
             <li><a th:href="@{/home}"  rel="external">我的</a></li>
         </ul>
     </footer>
+    <input th:value="@{/}" id="path" type="hidden">
     <script th:src="@{/js/slick.min.js}" ></script>
     <script type="text/javascript">
         $(document).on("pagecreate","#index",function(){
@@ -85,6 +89,22 @@
         $(window).load(function(){
             $(".loading").fadeOut()
         })
+
+        function  shareInvite() {
+            var path=$("#path").val();
+            $.ajax({
+                url:path+"shareInviteUserBySelf",
+                data:{},
+                success:function (result) {
+                    if(result.success){
+                        alert(result.data);
+                    }else{
+                        alert(result.errorMessage);
+                    }
+
+                }
+            });
+        }
     </script>
 </div>
 </body>

@@ -22,6 +22,11 @@ public class HtmlController {
         return "trade/trade";
     }
 
+    @RequestMapping("/inviteByUser")
+    public String inviteByUser(){
+        return "trade/inviteByUser";
+    }
+
     @GetMapping("/subordinate")
     public String subordinate(){
         return "my/subordinate";

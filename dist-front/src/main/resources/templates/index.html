@@ -15,6 +15,7 @@
        <input th:value="@{/}" id="path" type="hidden">
        <form>
            <input type="text" class="form-control" id="userId" placeholder="请输入分销系统的id账号">
+           <input type="password" class="form-control" id="password" placeholder="请输入分销系统的账号密码">
            <button type="button" class="btn btn-primary btn-lg btn-block" onclick="login()">确定进入系统</button>
        </form>
    </div>
@@ -22,8 +23,9 @@
 <script>
     function  login() {
         var userId=$("#userId").val();
+        var password=$("#password").val();
         var path=$("#path").val();
-        window.location.href=path+"login?userId="+userId;
+        window.location.href=path+"login?userId="+userId+"&password="+password;
     }
 </script>
 </html>

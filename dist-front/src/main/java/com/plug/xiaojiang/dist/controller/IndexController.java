@@ -27,6 +27,8 @@ public class IndexController {
 
     @Value("${dist.server.prefix}")
     private String prefix;
+    @Value("${dist.server.myprefix}")
+    private String myprefix;
     @Value("${dist.server.secret}")
     private String secret;
 
@@ -36,21 +38,60 @@ public class IndexController {
 
     @RequestMapping("/inviteUser")
     @ResponseBody
-    public DistResult inviteUser(String userName, HttpServletRequest request){
+    public DistResult inviteUser(String userName,String password,String name, HttpServletRequest request){
         DisMemberInfo memberInfo= (DisMemberInfo) request.getSession().getAttribute("member");
         if(memberInfo==null){
             return DistResult.failure("请登录！");
         }
         DisMemberInfoVo vo=new DisMemberInfoVo();
         vo.setSecret(secret);
-        vo.setDisUserId(PinYinUtil.getFullSpell(userName));
-        vo.setDisUserName(userName);
+//        vo.setDisUserId(PinYinUtil.getFullSpell(userName));
+        vo.setDisUserId(userName);
+        vo.setPassword(password);
+        vo.setDisUserName(name+"");
         vo.setDisModelId(memberInfo.getDisUserId());
         vo.setDisPlatSuper(memberInfo.getDisPlatSuper());
         vo.setDisNote("来源：plug测试");
         Gson gson=new Gson();
         DistResult result= sendToDistService.inviteUser(prefix,gson.toJson(vo));
         return result;
+    }
+
+    @RequestMapping("/inviteUserBySelf")
+    @ResponseBody
+    public DistResult inviteUserBySelf(String disUserId,String disPlatSuper,String userName,String password,String name, HttpServletRequest request){
+
+        DisMemberInfoVo vo=new DisMemberInfoVo();
+        vo.setSecret(secret);
+//        vo.setDisUserId(PinYinUtil.getFullSpell(userName));
+        vo.setDisUserId(userName);
+        vo.setPassword(password);
+        vo.setDisUserName(name+"");
+        vo.setDisModelId(disUserId);
+        vo.setDisPlatSuper(disPlatSuper);
+        vo.setDisNote("来源：plug测试");
+        Gson gson=new Gson();
+        DistResult result= sendToDistService.inviteUser(prefix,gson.toJson(vo));
+        return result;
+    }
+
+    @RequestMapping("/shareInviteUserBySelf")
+    @ResponseBody
+    public DistResult shareInviteUserBySelf(HttpServletRequest request){
+        DisMemberInfo memberInfo= (DisMemberInfo) request.getSession().getAttribute("member");
+        if(memberInfo==null){
+            return DistResult.failure("请登录！");
+        }
+        // ?userId=123
+        String shareLocation = myprefix+"inviteByUser.html";
+        shareLocation+="?disUserId="+memberInfo.getDisUserId();
+        shareLocation+="&disPlatSuper="+memberInfo.getDisPlatSuper();
+
+        // vo.setDisNote("来源：plug测试");
+
+//        Gson gson=new Gson();
+//        DistResult result= sendToDistService.inviteUser(prefix,gson.toJson(vo));
+        return DistResult.success(shareLocation);
     }
 
     @RequestMapping("/tradeOrder")
