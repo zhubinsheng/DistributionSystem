@@ -145,6 +145,7 @@ public class DisProfitRecordServiceImpl implements IDisProfitRecordService {
             }else{
                 //如果不是固定金额  则就是按照费率计算
                 baseAmount = param.getDisAmount().multiply(rate);
+                // rate 是利润率
             }
         }else{
             baseAmount = param.getDisAmount();
@@ -185,10 +186,11 @@ public class DisProfitRecordServiceImpl implements IDisProfitRecordService {
         for (int i = 0;i<levelInfo.length;i++){
             String userId  =levelInfo[i];
             logger.info("用户分润->开始处理{}级用户,用户id{}",i,userId);
-            if(i==0){
-                logger.info("用户分润->自己不能给自己分润,分润用户{},{}",userId,memberInfo.getDisUserId());
-                continue;
-            }
+            // 废弃 自己为最后一级代理 参与分润
+//            if(i==0){
+//                //logger.info("用户分润->自己不能给自己分润,分润用户{},{}",userId,memberInfo.getDisUserId());
+//                //continue;
+//            }
             addAmountRecord(userId,String.valueOf(i),IdentityStatus.USER_STATUS.getStatus(),param,memberInfo);
         }
         logger.info("用户分润->结束新增用户分润");
@@ -235,9 +237,12 @@ public class DisProfitRecordServiceImpl implements IDisProfitRecordService {
 
         BigDecimal value=new BigDecimal(disProfit.getDisProValue());
         BigDecimal newAmount=new BigDecimal(0);
+        logger.debug("分润->getMethod",CalModelStatus.getMethod(disProfit.getCalModel()));
+        logger.debug("分润->getBaseFixAmount",param.getBaseFixAmount());
+
         //根据 计算方式计算 分润
         newAmount = CalModelStatus.getMethod(disProfit.getCalModel()).calResult(param.getBaseFixAmount(),value);
-
+        logger.debug("分润->newAmount为",newAmount.toString());
         if(param.getDisAmount()!=null&&param.getDisAmount().compareTo(BigDecimal.ZERO)==1){
             BigDecimal newBaseAmount = param.getBaseAmount().subtract(newAmount);
             if(newBaseAmount.compareTo(BigDecimal.ZERO)==-1){

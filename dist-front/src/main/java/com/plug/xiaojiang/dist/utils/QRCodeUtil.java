@@ -37,8 +37,15 @@ public class QRCodeUtil {
             BitMatrix bitMatrix = writer.encode(content, BarcodeFormat.QR_CODE, 200, 200);
             BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
             ImageIO.write(bufferedImage, "png", os);
+            String base64Img = "data:image/png;base64," + Base64.encode(os.toByteArray());
             //添加图片标识
-            return new String("data:image/png;base64," + Base64.encode(os.toByteArray()));
+            return base64Img.substring(0,base64Img.length()-2);
+//            return new String("data:image/png;base64," + Base64.encode(os.toByteArray()));
+////          BufferedImage qrImageBuffer = QRGenUtils.createQRImageBuffer(content, 200, 200);
+//            ByteArrayOutputStream os2=new ByteArrayOutputStream();
+//            ImageIO.write(qrImageBuffer, "png", os2);
+//            Base64 base64 = new Base64();
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

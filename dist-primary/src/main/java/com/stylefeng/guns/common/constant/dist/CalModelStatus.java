@@ -15,6 +15,7 @@ public enum CalModelStatus {
     ZERO_STATUS("0","按照百分比计算") {
         @Override
         public BigDecimal calResult(BigDecimal amount, BigDecimal arg) {
+            // 相乘
             return amount.multiply(arg);
         }
     },
