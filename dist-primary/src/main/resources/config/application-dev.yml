@@ -19,7 +19,7 @@ biz:
     password: HcnJeWAccbiSn48B
 
 logging:
-  level.root: info
+  level.root: OFF
   level.com.stylefeng: debug
   path: logs/
   file: dist.log
