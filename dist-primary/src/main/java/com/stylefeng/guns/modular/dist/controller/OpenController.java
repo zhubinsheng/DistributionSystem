@@ -103,7 +103,7 @@ public class OpenController  {
         logger.info("会员查询->开始查询会员信息:{}",userId+"+password:"+password);
         DisMemberInfo memberInfoParam=new DisMemberInfo();
         memberInfoParam.setDisUserId(userId);
-        memberInfoParam.setPassword(password);
+        //memberInfoParam.setPassword(password);
         DisMemberInfo  memberInfo=disMemberInfoMapper.selectOne(memberInfoParam);
         logger.info("会员查询->开始查询会员账户");
         DisMemberAmount disMemberAmountParam=new DisMemberAmount();
@@ -162,8 +162,18 @@ public class OpenController  {
         memberInfo.setDisPlatSuper(user.getAccount());
         memberInfo.setDisPlatLevel(Integer.parseInt(user.getLevel()));
         memberInfo.setDisPlatFullIndex(user.getFullindex());
-        String[]  platArr = user.getFullindex().split("\\.");
-        memberInfo.setDisPlatformId(platArr[1]);
+//        String[]  platArr = user.getFullindex().split("\\.");
+//        memberInfo.setDisPlatformId(platArr[1]);
+
+        if (user.getFullindex().contains(".")){
+            String[]  platArr = user.getFullindex().split("\\.");
+            memberInfo.setDisPlatformId(platArr[1]);
+        }else {
+            memberInfo.setDisPlatformId(user.getFullindex());
+        }
+
+
+
         memberInfo.setType("0");
         disMemberInfoService.save(memberInfo);
         logger.info("新增会员->新增会员结束");

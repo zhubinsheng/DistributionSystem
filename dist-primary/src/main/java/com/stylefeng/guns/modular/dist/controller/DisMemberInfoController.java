@@ -2,11 +2,19 @@ package com.stylefeng.guns.modular.dist.controller;
 
 import com.github.pagehelper.Page;
 import com.google.gson.Gson;
+import com.plug.xiaojiang.dist.utils.QRCodeUtil;
+import com.stylefeng.guns.common.annotion.Permission;
 import com.stylefeng.guns.common.constant.Const;
 import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.common.controller.BaseController;
+import com.stylefeng.guns.common.exception.BizExceptionEnum;
+import com.stylefeng.guns.common.exception.BussinessException;
+import com.stylefeng.guns.common.persistence.dao.UserMapper;
 import com.stylefeng.guns.common.persistence.model.DisMemberInfo;
+import com.stylefeng.guns.common.persistence.model.User;
+import com.stylefeng.guns.core.db.Db;
 import com.stylefeng.guns.core.shiro.ShiroKit;
+import com.stylefeng.guns.core.util.ToolUtil;
 import com.stylefeng.guns.modular.dist.service.IDisMemberInfoService;
 import com.stylefeng.guns.modular.dist.vo.Categories;
 import com.stylefeng.guns.modular.dist.wapper.MemberWarpper;
@@ -18,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -163,6 +172,33 @@ public class DisMemberInfoController extends BaseController {
         memberInfo.setConfineStatus(Integer.parseInt(status));
         disMemberInfoService.updateLevel(memberInfo);
         return SUCCESS_TIP;
+    }
+
+
+    @RequestMapping(value = "/getZxing")
+    @ResponseBody
+    public Object getZxing(String status,String memberId) throws IOException {
+//        DisMemberInfo memberInfo = disMemberInfoService.selectListByUserId(memberId);
+//        memberInfo.setConfineStatus(Integer.parseInt(status));
+//        disMemberInfoService.updateLevel(memberInfo);
+        String zxing = QRCodeUtil.crateQRCode(memberId);
+        System.out.println(zxing);
+        return zxing;
+    }
+
+
+    @Permission
+    @RequestMapping("/mgr/{userId}")
+    public String getZxing(@PathVariable Integer userId, Model model) throws IOException {
+        if (ToolUtil.isEmpty(userId)) {
+            throw new BussinessException(BizExceptionEnum.REQUEST_NULL);
+        }
+        User user = (User) Db.create(UserMapper.class).selectOneByCon("id", userId);
+
+        String zxing = QRCodeUtil.crateQRCode(user.getAccount());
+        model.addAttribute("zxing", zxing);
+        System.out.println(zxing);
+        return zxing;
     }
 
     /**

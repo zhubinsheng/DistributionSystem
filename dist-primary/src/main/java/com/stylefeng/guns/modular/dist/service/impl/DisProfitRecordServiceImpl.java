@@ -108,14 +108,15 @@ public class DisProfitRecordServiceImpl implements IDisProfitRecordService {
         memberInfoParam.setDisUserId(param.getDisSetUserId());
         DisMemberInfo memberInfo=disMemberInfoMapper.selectOne(memberInfoParam);
         generatorAllRecord(param,memberInfo);
-        disSysIntegralRecordService.saveIntegral(param.getAccountType(),param.getDisAmount(),memberInfo);
+        //disSysIntegralRecordService.saveIntegral(param.getAccountType(),param.getDisAmount(),memberInfo);
         if(AccountTypeStatus.ZERO_STATUS.getStatus().equals(param.getAccountType())){
             //记录交易金额
             saveTradeRecord(param);
-        }else if(AccountTypeStatus.ONE_STATUS.getStatus().equals(param.getAccountType())){
-            //记录升级接口
-            saveVerticalLevel(memberInfo.getDisUserType(),param.getUpgradeLevel(),param.getDisSetUserId());
         }
+//        else if(AccountTypeStatus.ONE_STATUS.getStatus().equals(param.getAccountType())){
+//            //记录升级接口
+//            saveVerticalLevel(memberInfo.getDisUserType(),param.getUpgradeLevel(),param.getDisSetUserId());
+//        }
     }
 
     /**
@@ -166,6 +167,7 @@ public class DisProfitRecordServiceImpl implements IDisProfitRecordService {
         upgradeRecord.setLevelDiffer(String.valueOf(differ));
         disUpgradeRecordMapper.insert(upgradeRecord);
     }
+
     public  void saveTradeRecord(DisProfitRecordVo param){
         DisTradeRecord tradeRecord=new DisTradeRecord();
         tradeRecord.setDisUserId(param.getDisSetUserId());
@@ -183,6 +185,7 @@ public class DisProfitRecordServiceImpl implements IDisProfitRecordService {
         logger.info("用户分润->处理上级人员分润{}",levelInfo.length);
         //反转数组
         levelInfo = DistUtils.reverseArray(levelInfo);
+        BigDecimal baseAmount2=new BigDecimal(0);
         for (int i = 0;i<levelInfo.length;i++){
             String userId  =levelInfo[i];
             logger.info("用户分润->开始处理{}级用户,用户id{}",i,userId);
@@ -191,11 +194,20 @@ public class DisProfitRecordServiceImpl implements IDisProfitRecordService {
 //                //logger.info("用户分润->自己不能给自己分润,分润用户{},{}",userId,memberInfo.getDisUserId());
 //                //continue;
 //            }
-            addAmountRecord(userId,String.valueOf(i),IdentityStatus.USER_STATUS.getStatus(),param,memberInfo);
+            if (i==0){
+                addAmountRecord(userId,"1",IdentityStatus.USER_STATUS.getStatus(),param,memberInfo);
+                BigDecimal baseAmount = param.getBaseAmount();
+                baseAmount2 = baseAmount.divide(BigDecimal.valueOf(levelInfo.length-1));
+            }else {
+                // 剩下的上级代理平台剩下的钱
+                addAmountRecordByAverage(baseAmount2,userId,"1",IdentityStatus.USER_STATUS.getStatus(),param,memberInfo);
+            }
+
         }
         logger.info("用户分润->结束新增用户分润");
     }
 
+    //平台分润
     public void calPlatMoney(DisProfitRecordVo param,DisMemberInfo memberInfo){
         logger.info("平台分润->开始新增用户分润");
         String[] levelInfo=memberInfo.getDisPlatFullIndex().split("\\.");
@@ -237,12 +249,12 @@ public class DisProfitRecordServiceImpl implements IDisProfitRecordService {
 
         BigDecimal value=new BigDecimal(disProfit.getDisProValue());
         BigDecimal newAmount=new BigDecimal(0);
-        logger.debug("分润->getMethod",CalModelStatus.getMethod(disProfit.getCalModel()));
-        logger.debug("分润->getBaseFixAmount",param.getBaseFixAmount());
+//        logger.debug("分润->getMethod",CalModelStatus.getMethod(disProfit.getCalModel()));
+//        logger.debug("分润->getBaseFixAmount",param.getBaseFixAmount());
 
         //根据 计算方式计算 分润
         newAmount = CalModelStatus.getMethod(disProfit.getCalModel()).calResult(param.getBaseFixAmount(),value);
-        logger.debug("分润->newAmount为",newAmount.toString());
+//        logger.debug("分润->newAmount为",newAmount.toString());
         if(param.getDisAmount()!=null&&param.getDisAmount().compareTo(BigDecimal.ZERO)==1){
             BigDecimal newBaseAmount = param.getBaseAmount().subtract(newAmount);
             if(newBaseAmount.compareTo(BigDecimal.ZERO)==-1){
@@ -251,8 +263,6 @@ public class DisProfitRecordServiceImpl implements IDisProfitRecordService {
                 param.setBaseAmount(newBaseAmount);
             }
         }
-
-
 
         //先设置会员分润
         DisProfitRecord record=new DisProfitRecord();
@@ -274,6 +284,73 @@ public class DisProfitRecordServiceImpl implements IDisProfitRecordService {
         amountMangeService.addMoney(userId,newAmount,memberInfo.getDisUserId(), idType,disProfit.getAccountType());
         //增加会员金额信息
        // AmountTemplateFactoryContext context = new AmountTemplateFactoryContext(disProfit.getAccountType());
+        //context.amountTemplate.addMoney(userId,newAmount,memberInfo.getDisUserId(), idType);
+    }
+
+    public void addAmountRecordByAverage(BigDecimal baseAmount2,String userId,String level,String idType,DisProfitRecordVo param,DisMemberInfo memberInfo){
+        DisMemberInfo subMemberParam=new DisMemberInfo();
+        subMemberParam.setDisUserId(userId);
+        DisMemberInfo subMember=disMemberInfoMapper.selectOne(subMemberParam);
+
+//        DisProfitParam disProfitParam = new DisProfitParam();
+//        //平台
+//        disProfitParam.setDisPlatformId(subMember.getDisPlatformId());
+//        //账户类型
+//        disProfitParam.setAccountType(param.getAccountType());
+//        //垂直等级 ,admin用户不参与垂直等级 划分
+//        //admin平台不需要配置段位，没有等级之分
+//        //因为admin没有业绩的考察，不需要垂直等级,
+//        //admin网上也没有等级，这个地方则不用设置
+//        //只要是admin，通过其账户类型有且只有一个分润设置
+//        if(!userId.equals(SystemUser.ADMIN_INFO.getInfo())){
+//            disProfitParam.setDisUserRank(subMember.getDisUserRank());
+//            disProfitParam.setDisProLevel(level);
+//        }
+//
+//        //用户类型
+//        disProfitParam.setDisUserType(subMember.getDisUserType());
+//        DisProfitParam disProfit = disProfiParamMapper.selectOne(disProfitParam);
+//        if(disProfit==null){return;}
+//
+//        BigDecimal value=new BigDecimal(disProfit.getDisProValue());
+
+        BigDecimal newAmount=new BigDecimal(0);
+//        logger.debug("分润->getMethod",CalModelStatus.getMethod(disProfit.getCalModel()));
+//        logger.debug("分润->getBaseFixAmount",param.getBaseFixAmount());
+        newAmount = baseAmount2;
+//        //根据 计算方式计算 分润
+//        newAmount = CalModelStatus.getMethod(disProfit.getCalModel()).calResult(param.getBaseFixAmount(),value);
+//        logger.debug("分润->newAmount为",newAmount.toString());
+        if(param.getDisAmount()!=null&&param.getDisAmount().compareTo(BigDecimal.ZERO)==1){
+            BigDecimal newBaseAmount = param.getBaseAmount().subtract(newAmount);
+            if(newBaseAmount.compareTo(BigDecimal.ZERO)==-1){
+                return ;
+            }else {
+                param.setBaseAmount(newBaseAmount);
+            }
+        }
+
+        //先设置会员分润
+        DisProfitRecord record=new DisProfitRecord();
+        record.setDisPlatformId(memberInfo.getDisPlatformId());
+
+        record.setDisUserType(subMember.getDisUserType());
+        record.setDisSetUserId(memberInfo.getDisUserId());
+        record.setDisNote(param.getNote());
+        record.setDisOrderId(param.getOrderId());
+        record.setAccountType(param.getAccountType());
+
+        record.setDisAmount(newAmount);
+        record.setDisGetUserId(userId);
+        record.setAddTime(DateUtils.longToDateAll(System.currentTimeMillis()));
+        record.setUpdateTime(DateUtils.longToDateAll(System.currentTimeMillis()));
+        record.setIsDelete("N");
+        record.setType(idType);
+        record.setProfitNum(sysDicService.getOrderNo("profit"));
+        disProfitRecordMapper.insert(record);
+        amountMangeService.addMoney(userId,newAmount,memberInfo.getDisUserId(), idType,subMember.getType());
+        //增加会员金额信息
+        // AmountTemplateFactoryContext context = new AmountTemplateFactoryContext(disProfit.getAccountType());
         //context.amountTemplate.addMoney(userId,newAmount,memberInfo.getDisUserId(), idType);
     }
 

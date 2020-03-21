@@ -22,10 +22,43 @@ DisMemberInfo.initColumn = function () {
         {title: '用户段位', field: 'disUserRank', visible: true, align: 'center', valign: 'middle'},
         {title: '段位积分', field: 'rankIntegral', visible: true, align: 'center', valign: 'middle'},
         {title: '创建时间', field: 'addTime', visible: true, align: 'center', valign: 'middle'},
-        {title:"操作",field:'Button',events:operateEvents,formatter:DisMemberInfo.AddFunction}
+        {title:"操作",field:'Button',events:operateEvents,formatter:DisMemberInfo.AddFunction},
+        {title:"操作",field:'getZxing',events:operateEvents,formatter:DisMemberInfo.ZxingFunction}
     ];
 };
 
+
+DisMemberInfo.getZxing = function (status,memberId) {
+    //提交信息
+    var ajax = new $ax(Feng.ctxPath + "/disMemberInfo/getZxing", function(data){
+        Feng.success("处理成功!");
+
+        console.log(data);
+
+        $("#userImge").attr("src",data);
+
+    },function(data){
+        Feng.error("处理失败!" + data.responseJSON.message + "!");
+    });
+    var confineData = {'status':status,'memberId':memberId};
+    ajax.set(confineData);
+    ajax.start();
+};
+
+/**
+ * @return {string}
+ */
+DisMemberInfo.ZxingFunction = function(value,row,index){
+    console.log(value);
+    console.log(row['confineStatus']);
+    console.log(index);
+
+        return [
+            "<button id='getZxingFunction' type='button' class='btn btn-default'>获取推广二维码</button>"
+        ].join("");
+
+
+};
 
 DisMemberInfo.AddFunction = function(value,row,index){
     console.log(value);
@@ -41,7 +74,8 @@ DisMemberInfo.AddFunction = function(value,row,index){
         ].join("");
     }
 
-}
+};
+
 window.operateEvents = {
     'click #confineMember':function (e,value,row,index) {
         console.log(e);
@@ -59,7 +93,16 @@ window.operateEvents = {
         DisMemberInfo.confineMembers(0,row['disUserId']);
 
     },
-}
+    'click #getZxingFunction':function (e,value,row,index) {
+        console.log(e);
+        console.log(value);
+        console.log(row);
+        console.log(index);
+        DisMemberInfo.getZxing(1,row['disUserId']);
+
+    }
+};
+
 DisMemberInfo.confineMembers = function (status,memberId) {
     //提交信息
     var ajax = new $ax(Feng.ctxPath + "/disMemberInfo/confine", function(data){
@@ -72,7 +115,7 @@ DisMemberInfo.confineMembers = function (status,memberId) {
     var confineData = {'status':status,'memberId':memberId};
     ajax.set(confineData);
     ajax.start();
-}
+};
 /**
  * 检查是否选中
  */

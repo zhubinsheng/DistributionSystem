@@ -1,13 +1,21 @@
 package com.stylefeng.guns.modular.dist.controller;
 
 import com.github.pagehelper.Page;
+import com.plug.xiaojiang.dist.utils.QRCodeUtil;
+import com.stylefeng.guns.common.annotion.Permission;
 import com.stylefeng.guns.common.constant.Const;
 import com.stylefeng.guns.common.constant.dist.IdentityStatus;
 import com.stylefeng.guns.common.constant.factory.PageFactory;
 import com.stylefeng.guns.common.controller.BaseController;
+import com.stylefeng.guns.common.exception.BizExceptionEnum;
+import com.stylefeng.guns.common.exception.BussinessException;
+import com.stylefeng.guns.common.persistence.dao.UserMapper;
 import com.stylefeng.guns.common.persistence.model.DisMemberAmount;
 import com.stylefeng.guns.common.persistence.model.DisMemberInfo;
+import com.stylefeng.guns.common.persistence.model.User;
+import com.stylefeng.guns.core.db.Db;
 import com.stylefeng.guns.core.shiro.ShiroKit;
+import com.stylefeng.guns.core.util.ToolUtil;
 import com.stylefeng.guns.modular.dist.service.IDisMemberAmountService;
 import com.stylefeng.guns.modular.dist.service.IDisMemberInfoService;
 import com.stylefeng.guns.modular.dist.wapper.MemberAmountWarpper;
@@ -18,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -144,5 +153,19 @@ public class DisMemberAmountController extends BaseController {
     @ResponseBody
     public Object detail() {
         return null;
+    }
+
+    @Permission
+    @RequestMapping("/mgr/{userId}")
+    public String getZxing(@PathVariable Integer userId, Model model) throws IOException {
+        if (ToolUtil.isEmpty(userId)) {
+            throw new BussinessException(BizExceptionEnum.REQUEST_NULL);
+        }
+        User user = (User) Db.create(UserMapper.class).selectOneByCon("id", userId);
+
+        String zxing = QRCodeUtil.crateQRCode(user.getAccount());
+        model.addAttribute("zxing", zxing);
+        System.out.println(zxing);
+        return zxing;
     }
 }

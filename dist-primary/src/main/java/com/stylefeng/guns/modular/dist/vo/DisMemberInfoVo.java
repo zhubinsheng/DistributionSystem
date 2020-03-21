@@ -2,7 +2,7 @@ package com.stylefeng.guns.modular.dist.vo;
 
 public class DisMemberInfoVo   {
 
-    private String password;
+//    private String password;
 
     private String  secret;
 
@@ -75,11 +75,11 @@ public class DisMemberInfoVo   {
         this.disNote = disNote;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
+//    public String getPassword() {
+//        return password;
+//    }
+//
+//    public void setPassword(String password) {
+//        this.password = password;
+//    }
 }

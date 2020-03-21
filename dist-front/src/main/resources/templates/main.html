@@ -50,6 +50,10 @@
             <a href="javascript:void(0)" onclick="shareInvite()" data-transition="slide">分享邀请链接</a>
         </dl>
         <dl class="index-year">
+            <a href="" id="eweima" data-transition="slide">分享小程序链接</a>
+            <!--            <img id="ewmsrc" width="340px" height="340px" src="" />-->
+        </dl>
+        <dl class="index-year">
             <a href="/trade.html" data-transition="slide" data-ajax="false">
                 <dd>
                     <h4>交易</h4>
@@ -77,6 +81,26 @@
     <input th:value="@{/}" id="path" type="hidden">
     <script th:src="@{/js/slick.min.js}" ></script>
     <script type="text/javascript">
+
+        window.onload = function () {
+
+            var path=$("#path").val();
+            $.ajax({
+                url:path+"shareProcessUserBySelf",
+                data:{},
+                success:function (result) {
+                    if(result.success){
+                        alert(result.data);
+                        $("#eweima").href = result.data;
+                    }else{
+                        alert(result.errorMessage);
+                    }
+
+                }
+            })
+
+        };
+
         $(document).on("pagecreate","#index",function(){
             $('.slick').slick({
                 dots:true,
@@ -105,6 +129,7 @@
                 }
             });
         }
+
     </script>
 </div>
 </body>

@@ -10,6 +10,7 @@ import com.plug.xiaojiang.dist.http.request.SubordinateReq;
 import com.plug.xiaojiang.dist.model.DisMemberAmount;
 import com.plug.xiaojiang.dist.model.DisMemberInfo;
 import com.plug.xiaojiang.dist.utils.PinYinUtil;
+import com.plug.xiaojiang.dist.utils.QRCodeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
@@ -124,5 +126,18 @@ public class IndexController {
         Gson gson=new Gson();
         DistResult result= sendToDistService.subordinate(prefix,gson.toJson(req));
         return result;
+    }
+
+    @RequestMapping("/shareProcessUserBySelf")
+    @ResponseBody
+    public DistResult shareProcessUserBySelf(HttpServletRequest request) throws IOException {
+        DisMemberInfo memberInfo= (DisMemberInfo) request.getSession().getAttribute("member");
+        if(memberInfo==null){
+            return DistResult.failure("请登录！");
+        }
+        String disUserId = memberInfo.getDisUserId();
+        String erweima = QRCodeUtil.crateQRCode(disUserId);
+        System.out.println(erweima);
+        return DistResult.success(erweima);
     }
 }

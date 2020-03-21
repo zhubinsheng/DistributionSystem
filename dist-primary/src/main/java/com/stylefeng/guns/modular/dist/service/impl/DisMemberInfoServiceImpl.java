@@ -175,7 +175,7 @@ public class DisMemberInfoServiceImpl implements IDisMemberInfoService {
         //生成邀请奖励
         DisProfitRecordVo recordVo = new DisProfitRecordVo();
         recordVo.setAccountType(AccountTypeStatus.TWO_STATUS.getStatus());
-        disProfitRecordService.generatorAllRecord(recordVo,param);
+        //disProfitRecordService.generatorAllRecord(recordVo,param);
     }
 
     @Override

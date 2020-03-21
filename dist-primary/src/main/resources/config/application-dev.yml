@@ -3,20 +3,23 @@
 ##########################################################
 spring:
   datasource:
-#      url: jdbc:mysql://127.0.0.1:3306/authority?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
-#      username: root
+      url: jdbc:mysql://127.0.0.1:3306/authority?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
+      username: root
+      password: MyNewPaaword
+#      url: jdbc:mysql://123.57.131.113:3305/authority?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
+#      username: authority
 #      password: 6BmFrX5TGN342Ncn
-      url: jdbc:mysql://123.57.131.113:3305/authority?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
-      username: authority
-      password: 6BmFrX5TGN342Ncn
       filters: log4j,wall,mergeStat
 
 #多数据源
 biz:
   datasource:
-    url: jdbc:mysql://123.57.131.113:3305/distribution?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
-    username: distribution
-    password: HcnJeWAccbiSn48B
+    url: jdbc:mysql://127.0.0.1:3306/distribution?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
+    username: root
+    password: MyNewPaaword
+#        url: jdbc:mysql://123.57.131.113:3305/distribution?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
+#        username: distribution
+#        password: HcnJeWAccbiSn48B
 
 logging:
   level.root: OFF

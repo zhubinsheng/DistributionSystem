@@ -20,7 +20,7 @@ public class DisMemberInfo extends Model<DisMemberInfo> {
 
     private static final long serialVersionUID = 1L;
 
-	private String password;
+//	private String password;
     /**
      * 主键
      */
@@ -313,11 +313,11 @@ public class DisMemberInfo extends Model<DisMemberInfo> {
 			"}";
 	}
 
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
+//	public String getPassword() {
+//		return password;
+//	}
+//
+//	public void setPassword(String password) {
+//		this.password = password;
+//	}
 }

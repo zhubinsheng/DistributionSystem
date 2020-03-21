@@ -1,5 +1,6 @@
 package com.stylefeng.guns.modular.system.controller;
 
+import com.plug.xiaojiang.dist.utils.QRCodeUtil;
 import com.stylefeng.guns.common.annotion.Permission;
 import com.stylefeng.guns.common.annotion.log.BussinessLog;
 import com.stylefeng.guns.common.constant.Const;
@@ -36,8 +37,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.naming.NoPermissionException;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -109,6 +112,7 @@ public class UserMgrController extends BaseController {
         model.addAttribute("userAccount", user.getAccount());
         return PREFIX + "user_roleassign.html";
     }
+
 
     /**
      * 跳转到编辑管理员页面
