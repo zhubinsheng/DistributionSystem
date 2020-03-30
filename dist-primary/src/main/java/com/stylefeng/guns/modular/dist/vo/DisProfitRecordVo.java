@@ -9,6 +9,7 @@ public class DisProfitRecordVo {
 
     //秘钥
     private String  secret;
+
     //发起人
     private String disSetUserId;
 
@@ -32,7 +33,6 @@ public class DisProfitRecordVo {
 
     //计算分润基础金额
     private BigDecimal baseAmount;
-
 
     private BigDecimal baseFixAmount;
 

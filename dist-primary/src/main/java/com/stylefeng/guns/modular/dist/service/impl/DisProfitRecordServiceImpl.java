@@ -188,7 +188,7 @@ public class DisProfitRecordServiceImpl implements IDisProfitRecordService {
         BigDecimal baseAmount2=new BigDecimal(0);
         for (int i = 0;i<levelInfo.length;i++){
             String userId  =levelInfo[i];
-            logger.info("用户分润->开始处理{}级用户,用户id{}",i,userId);
+            logger.info("用户分润->开始处理{}级用户,用户id:{}",i,userId);
             // 废弃 自己为最后一级代理 参与分润
 //            if(i==0){
 //                //logger.info("用户分润->自己不能给自己分润,分润用户{},{}",userId,memberInfo.getDisUserId());
@@ -197,8 +197,12 @@ public class DisProfitRecordServiceImpl implements IDisProfitRecordService {
             if (i==0){
                 addAmountRecord(userId,"1",IdentityStatus.USER_STATUS.getStatus(),param,memberInfo);
                 BigDecimal baseAmount = param.getBaseAmount();
-                baseAmount2 = baseAmount.divide(BigDecimal.valueOf(levelInfo.length-1));
+                baseAmount2 = baseAmount.divide(BigDecimal.valueOf(levelInfo.length-2), 2, BigDecimal.ROUND_HALF_UP);
+
             }else {
+                if (userId.equals("admin")){
+                    continue;
+                }
                 // 剩下的上级代理平台剩下的钱
                 addAmountRecordByAverage(baseAmount2,userId,"1",IdentityStatus.USER_STATUS.getStatus(),param,memberInfo);
             }
@@ -212,7 +216,6 @@ public class DisProfitRecordServiceImpl implements IDisProfitRecordService {
         logger.info("平台分润->开始新增用户分润");
         String[] levelInfo=memberInfo.getDisPlatFullIndex().split("\\.");
         logger.info("平台分润->处理上级人员分润{}",levelInfo.length);
-
 
         for (int i = 0;i<levelInfo.length;i++){
             String userId  =levelInfo[i];
